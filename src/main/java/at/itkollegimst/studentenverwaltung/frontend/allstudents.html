@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studentenverwaltung</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="jquery-3.3.1-min.js"></script>
+</head>
+
+<body class="container mt-5">
+    <div class="container-fluid">
+        <h1>Studentenliste</h1>
+        <hr class ="border-2 border-top border-info">
+        <a href="insertstudent.html" class="btn btn-info" role="button">Student:in hinzufügen</a>
+        <hr class ="border-2 border-top border-info">
+        <table class="table" id="studentTable"></table>
+    </div>
+</body>
+
+<script>
+
+    getAllData();
+
+    async function getAllData() {
+
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/students',
+                {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept':'application/json'
+                    }
+                });
+            const data = await response.json();
+
+            const table = document.getElementById('studentTable')
+            while(table.rows[0]) table.deleteRow(0)
+
+            var row = table.insertRow()
+            var id = row.insertCell(0)
+            var name = row.insertCell(1)
+            var plz = row.insertCell(2)
+            var action = row.insertCell(3)
+
+            id.innerHTML = 'ID'
+            name.innerHTML = 'Name'
+            plz.innerHTML = 'Postleitzahl'
+            action.innerHTML = 'Aktion'
+
+            data.forEach(student => {
+                var row = table.insertRow()
+                var id = row.insertCell(0)
+                var name = row.insertCell(1)
+                var plz = row.insertCell(2)
+                var action = row.insertCell(3)
+                id.innerHTML = student.id
+                name.innerHTML = student.name
+                plz.innerHTML = student.plz
+                action.innerHTML = `<button type="button" class="btn btn-warning" onclick="deleteStudent(${student.id})">löschen<\button>`
+            });
+            console.log(data)
+        } catch (e) {
+            const table = document.getElementById('studentTable')
+            table.innerHTML = "Studentendaten konnten nicht geladen werden.";
+        }
+    }
+
+    async function deleteStudent(id) {
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/students/'+id,
+                {
+                    method: 'DELETE',
+                    cache: 'no-cache',
+                    header: {
+                        'Accept':'application/json'
+                    }
+                });
+            const data = await response.json();
+            await getAllData();
+        } catch (e) {
+            alert("Fehler beim Löschen des Studenten!");
+        }
+    }
+
+</script>
+
+
+</html>

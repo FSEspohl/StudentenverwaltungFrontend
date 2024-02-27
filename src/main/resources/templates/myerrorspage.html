@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Studenten-Thymeleaf</title>
+    <link rel="stylesheet" th:href="@{/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+
+<h1 class="text-danger" th:text="${errortitle}">ERROR</h1>
+<p class="lead" th:text="${errormessage}">Es ist ein Fehler aufgetreten!</p>
+<a class="btn btn-primary mt-3" th:href="@{/web/students}">zurück</a>
+
+</body>
+</html>
